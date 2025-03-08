@@ -16,7 +16,7 @@ function Menu() {
           </Link>
         </Button>
         <Button asChild>
-          <Link href='/sign-icon'>
+          <Link href='/sign-in'>
             <CircleUserRound /> Sign In
           </Link>
         </Button>
