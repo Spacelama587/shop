@@ -24,6 +24,8 @@ export const signInFormSchema = z.object({
     email: z.string().email('Invalid email address'),
     password: z.string().min(6, 'Password must be atleast 6 charecters')
 })
+
+
 //Scehma for signUPuser 
 
 export const signUpFormSchema = z.object({
@@ -34,4 +36,26 @@ export const signUpFormSchema = z.object({
 }).refine((data) => data.password === data.confirmPassword, {
     message: "passwords don't match",
     path: ['confirmPassword']
+})
+
+//cart schema 
+
+export const cartItemSchema = z.object({
+    productId: z.string().min(1, "product is required"),
+    name: z.string().min(1, "product name is required"),
+    slug: z.string().min(1, "slug is required"),
+    qty: z.number().int().nonnegative("quantity must be a positive number"),
+    image: z.string().min(1, 'Imagw is required'),
+    price: currency
+
+})
+
+export const insertCartSchema = z.object({
+    items: z.array(cartItemSchema),
+    itemsPrice: currency,
+    totalPrice: currency,
+    shippingPrice: currency,
+    taxPrice: currency,
+    sessionCartId: z.string().min(1, 'Session cart id is required' ),
+    userId: z.string().optional().nullable()
 })
