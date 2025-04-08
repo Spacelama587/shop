@@ -1,17 +1,24 @@
 import React from 'react'
 import { getProductBySlug } from '@/lib/actions/product.actions'
 import { notFound } from 'next/navigation'
-import ProductPrice from '@/components/shared/header/product/product.price'
+import ProductPrice from '@/components/shared/product/product.price'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import ProductImages from '@/components/shared/header/product/product-images'
-import AddToCart from '@/components/shared/header/product/add-to-cart'
+import ProductImages from '@/components/shared/product/product-images'
+import AddToCart from '@/components/shared/product/add-to-cart'
 import { getMyCart } from '@/lib/actions/cart.actions'
+import ReviewList from './review-list';
+import { auth } from '@/auth';
+import Rating from '@/components/shared/product/rating';
 
 async function ProductDetailsPage(props: {params: Promise<{slug:string}>}) {
     const {slug} = await props.params
     const product = await getProductBySlug(slug)
     if(!product) notFound()
+
+
+        const session = await auth();
+        const userId = session?.user?.id;
 
     const cart = await getMyCart()
   return (
@@ -28,7 +35,8 @@ async function ProductDetailsPage(props: {params: Promise<{slug:string}>}) {
                         {product.brand} {product.category}
                     </p>
                     <h1 className='h3-bold'>{product.name}</h1>
-                    <p>{product.rating} of {product.numReviews} Reviews</p>
+                    <Rating value={Number(product.rating)} />
+                    <p>{product.numReviews} reviews</p>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                         <ProductPrice value={Number(product.price)} className='w-24 rounded-full bg-green-100 text-green-700 px-5 py-2'/>
                     </div>
@@ -82,6 +90,15 @@ async function ProductDetailsPage(props: {params: Promise<{slug:string}>}) {
         </div>
      
     </section>
+    <section className='mt-10'>
+        <h2 className='h2-bold mb-5'>Customer Reviews</h2>
+        <ReviewList
+          userId={userId || ''}
+          productId={product.id}
+          productSlug={product.slug}
+        />
+      </section>
+
     </>
   )
 }
