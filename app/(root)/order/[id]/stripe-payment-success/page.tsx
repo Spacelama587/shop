@@ -22,8 +22,7 @@ const SuccessPage = async (props: {
 
   // Check if payment intent is valid
   if (
-    paymentIntent.metadata.orderId == null ||
-    paymentIntent.metadata.orderId !== order.id.toString()
+    paymentIntent.metadata.orderId == null || paymentIntent.metadata.orderId !== order.id.toString()
   ) {
     return notFound();
   }
